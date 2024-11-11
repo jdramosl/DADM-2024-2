@@ -24,6 +24,20 @@ class MainActivity : ComponentActivity() {
 
     private lateinit var mNewGameButton: Button
 
+    // Variable para alternar el turno inicial
+    private var isHumanTurn = true
+
+    private var humanWinsCount = 0
+    private var tiesCount = 0
+    private var androidWinsCount = 0
+
+    private lateinit var humanWinsTextView: TextView
+    private lateinit var tiesTextView: TextView
+    private lateinit var androidWinsTextView: TextView
+
+    private var gameOver = false  // Variable para rastrear si el juego ha terminado
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,6 +55,11 @@ class MainActivity : ComponentActivity() {
             findViewById(R.id.eight),
             findViewById(R.id.nine)
         )
+
+        humanWinsTextView = findViewById(R.id.human_wins)
+        tiesTextView = findViewById(R.id.ties)
+        androidWinsTextView = findViewById(R.id.android_wins)
+
 
         // Inicializar el TextView
         mInfoTextView = findViewById(R.id.information)
@@ -65,6 +84,8 @@ class MainActivity : ComponentActivity() {
         // Limpiar el tablero interno del juego
         mGame.clearBoard()
 
+        gameOver = false  // Reinicia el estado de gameOver
+
         // Restablecer los botones de la interfaz de usuario
         for (i in mBoardButtons.indices) {
             mBoardButtons[i].text = ""          // Limpiar el texto
@@ -72,14 +93,24 @@ class MainActivity : ComponentActivity() {
             mBoardButtons[i].setOnClickListener(ButtonClickListener(i)) // Asignar listener
         }
 
-        // Mostrar el mensaje de inicio
-        mInfoTextView.setText(R.string.turn_human)
+        // Decidir quién empieza
+        if (isHumanTurn) {
+            mInfoTextView.setText(R.string.turn_human)
+        } else {
+            mInfoTextView.setText(R.string.turn_computer)
+            val move = mGame.getComputerMove()
+            setMove(TicTacToeGame.COMPUTER_PLAYER, move)
+            mInfoTextView.setText(R.string.turn_human)
+        }
+
+        // Alternar el turno inicial para la próxima partida
+        isHumanTurn = !isHumanTurn
     }
 
     // Clase interna para manejar los clics de los botones del tablero
     private inner class ButtonClickListener(val location: Int) : View.OnClickListener {
         override fun onClick(view: View?) {
-            if (mBoardButtons[location].isEnabled) {
+            if (mBoardButtons[location].isEnabled  && !gameOver) {
                 setMove(TicTacToeGame.HUMAN_PLAYER, location)
 
                 // Revisar si hay un ganador después del movimiento humano
@@ -93,11 +124,27 @@ class MainActivity : ComponentActivity() {
 
                 // Mostrar mensaje según el resultado del juego
                 when (winner) {
-                    0 -> mInfoTextView.setText(R.string.turn_human)
-                    1 -> mInfoTextView.setText(R.string.result_tie)
-                    2 -> mInfoTextView.setText(R.string.result_human_wins)
-                    else -> mInfoTextView.setText(R.string.result_computer_wins)
+                    0 -> mInfoTextView.setText(R.string.turn_human) // No hay ganador, sigue el turno
+                    1 -> {
+                        tiesCount++
+                        tiesTextView.text = "Ties: $tiesCount"
+                        mInfoTextView.setText(R.string.result_tie)
+                        gameOver = true
+                    }
+                    2 -> {
+                        humanWinsCount++
+                        humanWinsTextView.text = "Human: $humanWinsCount"
+                        mInfoTextView.setText(R.string.result_human_wins)
+                        gameOver = true
+                    }
+                    else -> {
+                        androidWinsCount++
+                        androidWinsTextView.text = "Android: $androidWinsCount"
+                        mInfoTextView.setText(R.string.result_computer_wins)
+                        gameOver = true
+                    }
                 }
+
             }
         }
     }

@@ -85,6 +85,36 @@
         android:layout_marginTop="20dp"
         android:textSize="20sp" />
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/information"
+        android:layout_marginTop="20dp">
+
+        <TextView
+            android:id="@+id/human_wins"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Human: 0" />
+
+        <TextView
+            android:id="@+id/ties"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ties: 0"
+            android:layout_toRightOf="@id/human_wins"
+            android:layout_marginStart="20dp" />
+
+        <TextView
+            android:id="@+id/android_wins"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Android: 0"
+            android:layout_toRightOf="@id/ties"
+            android:layout_marginStart="20dp" />
+    </RelativeLayout>
+
+
     <!-- Botón para iniciar un nuevo juego -->
     <Button
         android:id="@+id/button_new_game"
@@ -94,3 +124,4 @@
         android:layout_marginTop="20dp"/>
 
 </LinearLayout>
+
