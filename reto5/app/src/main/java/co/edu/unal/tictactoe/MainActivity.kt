@@ -180,15 +180,22 @@ class MainActivity : ComponentActivity() {
         mBoardView.invalidate();
 
         gameOver = false  // Reinicia el estado de gameOver
-
+        isHumanTurn = isHumanStarting
         // Decidir quién empieza
         if (isHumanStarting) {
             mInfoTextView.setText(R.string.turn_human)
         } else {
-            mInfoTextView.setText(R.string.turn_computer)
-            val move = mGame.getComputerMove()
-            setMove(TicTacToeGame.COMPUTER_PLAYER, move)
-            mInfoTextView.setText(R.string.turn_human)
+            Handler().postDelayed({
+                val computerMove = mGame.getComputerMove()
+                setMove(TicTacToeGame.COMPUTER_PLAYER, computerMove)
+                // Para la computadora
+                if (mComputerMediaPlayer != null) {
+                    mComputerMediaPlayer?.start() // Reproduce el sonido de la computadora
+                }
+                mInfoTextView.setText(R.string.turn_human)
+                mBoardView.invalidate() // Redibujar el tablero después del movimiento de la computadora
+                isHumanTurn = true
+            }, 1000) // 1000 milisegundos = 1 segundo
         }
 
         // Alternar el turno inicial para la próxima partida
