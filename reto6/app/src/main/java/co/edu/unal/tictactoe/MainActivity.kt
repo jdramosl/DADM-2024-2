@@ -131,16 +131,16 @@ class MainActivity : ComponentActivity() {
                         Handler(Looper.getMainLooper()).postDelayed({
                             val computerMove = mGame.getComputerMove()
                             try {
+                                if (mComputerMediaPlayer != null) {
+                                    mComputerMediaPlayer?.start()
+                                }
                                 setMove(TicTacToeGame.COMPUTER_PLAYER, computerMove)
                                 mInfoTextView.setText(R.string.turn_human)
                                 mBoardView.invalidate() // Redibujar el tablero después del movimiento de la computadora
                                 isHumanTurn = true
                                 winner = mGame.checkForWinner()
                                 checkWinner(winner)
-                                // Para la computadora
-                                if (mComputerMediaPlayer != null) {
-                                    mComputerMediaPlayer?.start() // Reproduce el sonido de la computadora
-                                }
+
                             } catch (e: Exception) {
                                 isHumanTurn = false
                                 Log.e("TicTacToe", "Error al ejecutar el movimiento del ordenador", e)
@@ -158,17 +158,18 @@ class MainActivity : ComponentActivity() {
                 Handler(Looper.getMainLooper()).postDelayed({
                     val computerMove = mGame.getComputerMove()
                     try {
+                        if (mComputerMediaPlayer != null) {
+                            mComputerMediaPlayer?.start() // Reproduce el sonido de la computadora
+                        }
                         setMove(TicTacToeGame.COMPUTER_PLAYER, computerMove)
                         mInfoTextView.setText(R.string.turn_human)
                         mBoardView.invalidate() // Redibujar el tablero después del movimiento de la computadora
                         isHumanTurn = true
                         val winner = mGame.checkForWinner()
                         checkWinner(winner)
-                        // Para la computadora
-                        if (mComputerMediaPlayer != null) {
-                            mComputerMediaPlayer?.start() // Reproduce el sonido de la computadora
-                        }
+
                     } catch (e: Exception) {
+                        isHumanTurn = false
                         Log.e("TicTacToe", "Error al ejecutar el movimiento del ordenador", e)
                     }
                 }, 2500)
@@ -292,15 +293,16 @@ class MainActivity : ComponentActivity() {
             Handler(Looper.getMainLooper()).postDelayed({
                 val computerMove = mGame.getComputerMove()
                 try {
-                    setMove(TicTacToeGame.COMPUTER_PLAYER, computerMove)
-                    // Para la computadora
+
                     if (mComputerMediaPlayer != null) {
                         mComputerMediaPlayer?.start() // Reproduce el sonido de la computadora
                     }
+                    setMove(TicTacToeGame.COMPUTER_PLAYER, computerMove)
                     mInfoTextView.setText(R.string.turn_human)
                     mBoardView.invalidate() // Redibujar el tablero después del movimiento de la computadora
                     isHumanTurn = true
                 } catch (e: Exception) {
+                    isHumanTurn = false
                     Log.e("TicTacToe", "Error al ejecutar el movimiento del ordenador", e)
                 }
             }, 1000) // 1000 milisegundos = 1 segundo
